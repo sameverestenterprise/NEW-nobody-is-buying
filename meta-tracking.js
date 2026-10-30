@@ -1,12 +1,12 @@
 /* Nobody Is Buying — Meta browser events (2026-10-29)
-   Pixel: 1643741683962753
+   Pixel: 1907948303354997
    Purchase is NOT sent from this file. Stripe webhooks are required for purchases.
    This script requires explicit visitor opt-in, as in the original installation.
 */
 (() => {
   "use strict";
 
-  const PIXEL_ID = "1643741683962753";
+  const PIXEL_ID = "1907948303354997";
   const CONSENT_KEY = "nib_meta_tracking_consent_v1";
   const CHECKOUTS = {
     "https://buy.stripe.com/5kQ5kFfFEamugJocJC6Na00": {
