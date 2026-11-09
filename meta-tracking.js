@@ -1,6 +1,6 @@
 /*
- * Nobody Is Buying â€” opt-in browser Pixel + live Stripe checkout handoff.
- * Replace LIVE_WORKER_ORIGIN before publishing. Never put secrets in this file.
+ * Nobody Is Buying — opt-in browser Pixel + live Stripe checkout handoff.
+ * Live Worker configured below. Never put secrets in this file.
  * Purchase is sent ONLY by the verified Stripe webhook in the live Worker.
  */
 (() => {
@@ -101,29 +101,55 @@
     const panel = document.createElement("div");
     panel.id = "nib-consent";
     panel.setAttribute("role", "dialog");
-    panel.setAttribute("aria-label", "Optional advertising tracking");
+    panel.setAttribute("aria-label", "Optional cookies and advertising tracking");
     Object.assign(panel.style, {
       position: "fixed", zIndex: 99999, left: "12px", right: "12px",
-      bottom: "12px", maxWidth: "640px", margin: "auto",
+      bottom: "12px", maxWidth: "520px", margin: "auto",
       border: "1px solid #7cff1f", borderRadius: "12px",
       padding: "17px", background: "#101310", color: "white",
       boxShadow: "0 10px 50px #0009", font: "14px/1.5 system-ui,sans-serif"
     });
+
+    const heading = document.createElement("strong");
+    heading.textContent = "Your privacy matters";
+    heading.style.display = "block";
+    heading.style.fontSize = "16px";
+    heading.style.marginBottom = "6px";
+    panel.appendChild(heading);
+
     const intro = document.createElement("p");
     intro.textContent =
-      "May we use optional Meta advertising tracking to measure website visits, checkout clicks and purchases? If you buy after agreeing, we may share the purchase value, a hashed version of your checkout email, and browser details (such as Meta cookies, IP address and user agent) with Meta. You can decline and still buy.";
-    intro.style.margin = "0 0 12px";
+      "We use optional cookies and similar tools to understand how people use our website and measure our ads. If you accept, we may share website and purchase activity with Meta. You can reject and still buy.";
+    intro.style.margin = "0 0 10px";
     panel.appendChild(intro);
-    for (const [label, decision] of [["No thanks", "denied"], ["Allow tracking", "granted"]]) {
+
+    const policy = document.createElement("a");
+    policy.href = "#privacy";
+    policy.textContent = "Read our privacy policy";
+    Object.assign(policy.style, {
+      display: "inline-block", color: "#b7ff85", textDecoration: "underline",
+      marginBottom: "12px", fontSize: "13px"
+    });
+    panel.appendChild(policy);
+
+    const actions = document.createElement("div");
+    Object.assign(actions.style, {
+      display: "flex", flexWrap: "wrap", gap: "8px"
+    });
+    for (const [label, decision] of [["Reject optional", "denied"], ["Accept all", "granted"]]) {
       const button = document.createElement("button");
       button.type = "button";
       button.textContent = label;
+      const isAccept = decision === "granted";
       Object.assign(button.style, {
-        cursor: "pointer", border: "1px solid #7cff1f",
-        borderRadius: "8px", padding: "9px 14px", marginRight: "10px",
-        marginBottom: "4px", fontWeight: "700",
-        background: decision === "granted" ? "#7cff1f" : "transparent",
-        color: decision === "granted" ? "#071007" : "white"
+        cursor: "pointer",
+        // Make acceptance the visually primary action without hiding rejection.
+        border: isAccept ? "2px solid #7cff1f" : "1px solid #b8ef99",
+        borderRadius: "8px", padding: "10px 16px",
+        minWidth: "142px", minHeight: "44px", fontWeight: "700",
+        background: isAccept ? "#7cff1f" : "transparent",
+        color: isAccept ? "#071007" : "#ffffff",
+        outlineOffset: "3px"
       });
       button.addEventListener("click", () => {
         const previous = getConsent();
@@ -136,8 +162,9 @@
           void withdrawStoredReferences();
         }
       });
-      panel.appendChild(button);
+      actions.appendChild(button);
     }
+    panel.appendChild(actions);
     document.body.appendChild(panel);
   }
 
